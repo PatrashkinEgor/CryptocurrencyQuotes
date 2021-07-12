@@ -63,9 +63,7 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
 
         string MakeAPICall()
         {
-            
-            var URI = new UriBuilder("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest");
-
+            var URI = new UriBuilder(connectionSettings.LatestURI);
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["start"] = "1";
             queryString["limit"] = NumbOfCurrencies.ToString();
@@ -75,22 +73,6 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
             HttpResponseMessage response =  client.GetAsync(URI.ToString()).Result;
             response.EnsureSuccessStatusCode();
             return response.Content.ReadAsStringAsync().Result;
-            /*
-            var URL = new UriBuilder("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest");
-
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["start"] = "1";
-            queryString["limit"] = "200";
-            queryString["convert"] = "USD";
-            queryString["aux"] = "";
-
-            URL.Query = queryString.ToString();
-
-            var client = new WebClient();
-            client.Headers.Add("X-CMC_PRO_API_KEY", connectionSettings.ApiKey);
-            client.Headers.Add("Accepts", "application/json");
-            return client.DownloadString(URL.ToString());
-            */
         }
     }
 }
