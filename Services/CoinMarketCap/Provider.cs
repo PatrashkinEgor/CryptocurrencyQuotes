@@ -24,7 +24,6 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
     {
         private int NumbOfCurrencies{ get; set; } = 50;
         private ConnectionSettings connectionSettings;
-        public List<CryptoQuotesModel> cryptoQuotes;
         static readonly HttpClient client = new HttpClient();
 
         public Provider()
@@ -44,6 +43,7 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
         public IEnumerable<CryptoQuotesModel> GetList()
         {
             var quotesData = JsonConvert.DeserializeObject<LatestDataResponse>(MakeAPICall());
+            List<CryptoQuotesModel> cryptoQuotes = new List<CryptoQuotesModel>();
             foreach(Cryptocurrency c in quotesData.Data)
             {
                 CryptoQuotesModel cq = new CryptoQuotesModel
@@ -63,7 +63,7 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
 
         string MakeAPICall()
         {
-            /*
+            
             var URI = new UriBuilder("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest");
 
             var queryString = HttpUtility.ParseQueryString(string.Empty);
@@ -75,7 +75,7 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
             HttpResponseMessage response =  client.GetAsync(URI.ToString()).Result;
             response.EnsureSuccessStatusCode();
             return response.Content.ReadAsStringAsync().Result;
-            */
+            /*
             var URL = new UriBuilder("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest");
 
             var queryString = HttpUtility.ParseQueryString(string.Empty);
@@ -90,6 +90,7 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
             client.Headers.Add("X-CMC_PRO_API_KEY", connectionSettings.ApiKey);
             client.Headers.Add("Accepts", "application/json");
             return client.DownloadString(URL.ToString());
+            */
         }
     }
 }
