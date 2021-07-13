@@ -192,7 +192,6 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CoinMarketCap\ConnectionSettings.cs" />
-    <Compile Include="Services\CoinMarketCap\InfoDataResponse.cs" />
     <Compile Include="Services\CoinMarketCap\LatestDataResponse.cs" />
     <Compile Include="Services\CoinMarketCap\Provider.cs" />
     <Compile Include="Services\IQuotesProvider.cs" />
