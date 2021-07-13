@@ -5,20 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Hosting;
-using System.Threading.Tasks;
-using System.Net;
+using System.Text;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 namespace CryptocurrencyQuotes.Services.CoinMarketCap
 { 
-    class ConnectionSettings
-    {
-        public string ApiKey { get; set; }
-        public string LatestURI { get; set; }
-        public string InfoURI { get; set; }
-    }
 
     public class Provider : IQuotesProvider
     {
@@ -29,48 +23,79 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
         public Provider()
         {
             string path = HostingEnvironment.MapPath("/Services/CoinMarketCap/ConnectionSettings.json");
-            using (FileStream fs = File.OpenRead(path))
-            {
-                byte[] array = new byte[fs.Length];
-                fs.Read(array, 0, array.Length);
-                connectionSettings = JsonConvert.DeserializeObject<ConnectionSettings>(System.Text.Encoding.Default.GetString(array)); 
-            }
-            
+            connectionSettings = JsonConvert.DeserializeObject<ConnectionSettings>(File.ReadAllText(path));
             client.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", connectionSettings.ApiKey);
             client.DefaultRequestHeaders.Add("Accepts", "application/json");
         }
 
-        public IEnumerable<CryptoQuotesModel> GetList()
+        public IEnumerable<CryptoQuoteModel> GetList()
         {
-            var quotesData = JsonConvert.DeserializeObject<LatestDataResponse>(MakeAPICall());
-            List<CryptoQuotesModel> cryptoQuotes = new List<CryptoQuotesModel>();
-            foreach(Cryptocurrency c in quotesData.Data)
+ //           var quotesData = JsonConvert.DeserializeObject<LatestDataResponse>(GetLatestQuotes());
+            List<CryptoQuoteModel> cryptoQuotes = new List<CryptoQuoteModel>();
+            cryptoQuotes.Add(new CryptoQuoteModel
             {
-                CryptoQuotesModel cq = new CryptoQuotesModel
+                Id = 1,
+                Symbol = "BTC",
+                Logo = "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+                MarketCap = 617861871024.7037M,
+                PercentChange1h = 0.32842557M,
+                PercentChange24h = -3.78034997M,
+                Price = 32943.87093015334M,
+                Name = "Bitcoin",
+                LastUpdated = DateTime.Parse("2021 - 07 - 13T06:20:02.000Z")
+            });
+            /*
+            StringBuilder logoRequest = new StringBuilder();
+            foreach (Cryptocurrency c in quotesData.Data)
+            {
+                CryptoQuoteModel cq = new CryptoQuoteModel
                 {
+                    Id = c.Id,
                     Symbol = c.Symbol,
-                    Market_cap = c.Quote.USD.Market_cap,
-                    Percent_change_1h = c.Quote.USD.Percent_change_1h,
-                    Percent_change_24h = c.Quote.USD.Percent_change_24h,
+                    MarketCap = c.Quote.USD.MarketCap,
+                    PercentChange1h = c.Quote.USD.PercentChange1h,
+                    PercentChange24h = c.Quote.USD.PercentChange24h,
                     Price = c.Quote.USD.Price,
                     Name = c.Name,
-                    Last_updated = c.Last_updated
+                    LastUpdated = c.LastUpdated
                 };
+                if (logoRequest.Length != 0)
+                    logoRequest.Append(',');
+                logoRequest.Append(c.Id.ToString());
                 cryptoQuotes.Add(cq);
             }
+            JObject jObject = JObject.Parse(GetCryptoLogos(logoRequest.ToString()));
+            foreach (CryptoQuoteModel cqm in cryptoQuotes)
+            {
+                string path = "data." + cqm.Id.ToString() + ".logo";
+                cqm.Logo = jObject.SelectToken(path).ToString();
+            }*/
             return cryptoQuotes;
         }
 
-        string MakeAPICall()
+        private string GetLatestQuotes()
         {
-            var URI = new UriBuilder(connectionSettings.LatestURI);
+            var URI = new UriBuilder(connectionSettings.LatestQuotesURI);
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["start"] = "1";
             queryString["limit"] = NumbOfCurrencies.ToString();
             queryString["convert"] = "USD";
             URI.Query = queryString.ToString();
+            return MakeRequest(URI);
+        }
 
-            HttpResponseMessage response =  client.GetAsync(URI.ToString()).Result;
+        private string GetCryptoLogos(string requestedId)
+        {
+            var URI = new UriBuilder(connectionSettings.CryptoInfoURI);
+            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            queryString["id"] = requestedId;
+            URI.Query = queryString.ToString();
+            return MakeRequest(URI);
+        }
+
+        private string MakeRequest(UriBuilder URI)
+        {
+            HttpResponseMessage response = client.GetAsync(URI.ToString()).Result;
             response.EnsureSuccessStatusCode();
             return response.Content.ReadAsStringAsync().Result;
         }

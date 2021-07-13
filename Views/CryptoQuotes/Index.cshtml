@@ -10,12 +10,12 @@
 </head>
 <body>
     <div>
-        <h3>Котировки валютг</h3>
+        <h3>Котировки валют</h3>
         <table>
             <tr>
+                <td><p></p></td>
                 <td><p>Название</p></td>
                 <td><p>Символ</p></td>
-                <td><p>Логотип</p></td>
                 <td><p>Цена,$</p></td>
                 <td><p>Изменение цены за 1 час, %</p></td>
                 <td><p>Изменение цены за 24 часа, %</p></td>
@@ -26,14 +26,15 @@
             @foreach (var q in ViewBag.Quotes)
             {
                 <tr>
+                    <td><p><Img src=@q.Logo Width="25" Height="25"></p></td>
                     <td><p>@q.Name</p></td>
                     <td><p>@q.Symbol</p></td>
-                    <td><p><Img src=@q.Logo Width="200" Height="200"></p></td>
+
                     <td><p>@q.Price</p></td>
-                    <td><p>@q.Percent_change_1h</p></td>
-                    <td><p>@q.Percent_change_24h</p></td>
-                    <td><p>@q.Market_cap</p></td>
-                    <td><p>@q.Last_updated</p></td>
+                    <td><p>@q.PercentChange1h</p></td>
+                    <td><p>@q.PercentChange24h</p></td>
+                    <td><p>@q.MarketCap</p></td>
+                    <td><p>@q.LastUpdated</p></td>
                 </tr>
             }
         </table>

@@ -9,6 +9,6 @@ namespace CryptocurrencyQuotes.Services
 {
     public interface IQuotesProvider
     {
-        IEnumerable<CryptoQuotesModel> GetList();
+        IEnumerable<CryptoQuoteModel> GetList();
     }
 }

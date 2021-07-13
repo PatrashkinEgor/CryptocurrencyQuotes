@@ -187,10 +187,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\CryptoQuotesModel.cs" />
+    <Compile Include="Models\CryptoQuoteModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CoinMarketCap\ConnectionSettings.cs" />
     <Compile Include="Services\CoinMarketCap\InfoDataResponse.cs" />
     <Compile Include="Services\CoinMarketCap\LatestDataResponse.cs" />
     <Compile Include="Services\CoinMarketCap\Provider.cs" />
