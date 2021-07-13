@@ -32,18 +32,22 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
         {
  //           var quotesData = JsonConvert.DeserializeObject<LatestDataResponse>(GetLatestQuotes());
             List<CryptoQuoteModel> cryptoQuotes = new List<CryptoQuoteModel>();
-            cryptoQuotes.Add(new CryptoQuoteModel
+            for (int i = 0; i < 300; i++)
             {
-                Id = 1,
-                Symbol = "BTC",
-                Logo = "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
-                MarketCap = 617861871024.7037M,
-                PercentChange1h = 0.32842557M,
-                PercentChange24h = -3.78034997M,
-                Price = 32943.87093015334M,
-                Name = "Bitcoin",
-                LastUpdated = DateTime.Parse("2021 - 07 - 13T06:20:02.000Z")
-            });
+                cryptoQuotes.Add(new CryptoQuoteModel
+                {
+                    Id = 1,
+                    Symbol = "BTC",
+                    Logo = "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+                    MarketCap = 617861871024.7037M,
+                    PercentChange1h = 0.32842557M,
+                    PercentChange24h = -3.78034997M,
+                    Price = 32943.87093015334M + i,
+                    Name = "Bitcoin" + i.ToString(),
+                    LastUpdated = DateTime.Parse("2021 - 07 - 13T06:20:02.000Z")
+                });
+            }
+
             /*
             StringBuilder logoRequest = new StringBuilder();
             foreach (Cryptocurrency c in quotesData.Data)

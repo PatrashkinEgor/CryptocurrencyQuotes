@@ -11,34 +11,74 @@
 <body>
     <div>
         <h3>Котировки валют</h3>
-        <table>
-            <tr>
-                <td><p></p></td>
-                <td><p>Название</p></td>
-                <td><p>Символ</p></td>
-                <td><p>Цена,$</p></td>
-                <td><p>Изменение цены за 1 час, %</p></td>
-                <td><p>Изменение цены за 24 часа, %</p></td>
-                <td><p>Капитализация</p></td>
-                <td><p>Обновление</p></td>
-                <td></td>
-            </tr>
-            @foreach (var q in ViewBag.Quotes)
-            {
+        <table id="example" class="display" style="width:100%">
+            <thead>
                 <tr>
-                    <td><p><Img src=@q.Logo Width="25" Height="25"></p></td>
-                    <td><p>@q.Name</p></td>
-                    <td><p>@q.Symbol</p></td>
-
-                    <td><p>@q.Price</p></td>
-                    <td><p>@q.PercentChange1h</p></td>
-                    <td><p>@q.PercentChange24h</p></td>
-                    <td><p>@q.MarketCap</p></td>
-                    <td><p>@q.LastUpdated</p></td>
+                    <td><p></p></td>
+                    <td><p>Название</p></td>
+                    <td><p>Символ</p></td>
+                    <td><p>Цена,$</p></td>
+                    <td><p>Изменение цены за 1 час, %</p></td>
+                    <td><p>Изменение цены за 24 часа, %</p></td>
+                    <td><p>Капитализация</p></td>
+                    <td><p>Обновление</p></td>
+                    <td></td>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var q in ViewBag.Quotes)
+                {
+                    <tr>
+                        <td><p><Img src=@q.Logo Width="25" Height="25"></p></td>
+                        <td><p>@q.Name</p></td>
+                        <td><p>@q.Symbol</p></td>
+
+                        <td><p>@q.Price</p></td>
+                        <td><p>@q.PercentChange1h</p></td>
+                        <td><p>@q.PercentChange24h</p></td>
+                        <td><p>@q.MarketCap</p></td>
+                        <td><p>@q.LastUpdated</p></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+
+            </tfoot>
         </table>
+
+        <div id="pager" style="position: unset;">
+            <form>
+                <img src="@Url.Content("~/Content/images/first.png")" class="first" />
+                <img src="@Url.Content("~/Content/images/prev.png")" class="prev" />
+                <input type="text" class="pagedisplay" />
+                <img src="@Url.Content("~/Content/images/next.png")" class="next" />
+                <img src="@Url.Content("~/Content/images/last.png")" class="last" />
+                <select class="pagesize">
+                    <option selected="selected" value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                </select>
+            </form>
+        </div>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                columnDefs: [{
+                    targets: [0],
+                    orderData: [0, 1]
+                }, {
+                    targets: [1],
+                    orderData: [1, 0]
+                }, {
+                    targets: [4],
+                    orderData: [4, 0]
+                }]
+            });
+        });
+    </script>
 </body>
 </html>
 
