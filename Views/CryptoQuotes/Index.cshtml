@@ -7,37 +7,38 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Котировки валют</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+
 </head>
 <body>
     <div>
         <h3>Котировки валют</h3>
-        <table id="example" class="display" style="width:100%">
+        <table id="Cryptocurrency" class="display" style="width:100%">
             <thead>
                 <tr>
                     <td><p></p></td>
-                    <td><p>Название</p></td>
-                    <td><p>Символ</p></td>
-                    <td><p>Цена,$</p></td>
-                    <td><p>Изменение цены за 1 час, %</p></td>
-                    <td><p>Изменение цены за 24 часа, %</p></td>
-                    <td><p>Капитализация</p></td>
-                    <td><p>Обновление</p></td>
-                    <td></td>
+                    <th><p>Название</p></th>
+                    <th><p>Символ</p></th>
+                    <th><p>Цена,$</p></th>
+                    <th><p>Изменение цены за 1 час, %</p></th>
+                    <th><p>Изменение цены за 24 часа, %</p></th>
+                    <th><p>Капитализация</p></th>
+                    <th><p>Обновление</p></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var q in ViewBag.Quotes)
                 {
                     <tr>
-                        <td><p><Img src=@q.Logo Width="25" Height="25"></p></td>
-                        <td><p>@q.Name</p></td>
-                        <td><p>@q.Symbol</p></td>
-
-                        <td><p>@q.Price</p></td>
-                        <td><p>@q.PercentChange1h</p></td>
-                        <td><p>@q.PercentChange24h</p></td>
-                        <td><p>@q.MarketCap</p></td>
-                        <td><p>@q.LastUpdated</p></td>
+                        <td><Img src=@q.Logo Width="25" Height="25"></td>
+                        <td>@q.Name</td>
+                        <td>@q.Symbol</td>
+                        <td>@q.Price</td>
+                        <td>@q.PercentChange1h</td>
+                        <td>@q.PercentChange24h</td>
+                        <td>@q.MarketCap</td>
+                        <td>@q.LastUpdated</td>
                     </tr>
                 }
             </tbody>
@@ -45,40 +46,26 @@
 
             </tfoot>
         </table>
-
-        <div id="pager" style="position: unset;">
-            <form>
-                <img src="@Url.Content("~/Content/images/first.png")" class="first" />
-                <img src="@Url.Content("~/Content/images/prev.png")" class="prev" />
-                <input type="text" class="pagedisplay" />
-                <img src="@Url.Content("~/Content/images/next.png")" class="next" />
-                <img src="@Url.Content("~/Content/images/last.png")" class="last" />
-                <select class="pagesize">
-                    <option selected="selected" value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                </select>
-            </form>
-        </div>
     </div>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#example').DataTable({
-                columnDefs: [{
-                    targets: [0],
-                    orderData: [0, 1]
-                }, {
-                    targets: [1],
-                    orderData: [1, 0]
-                }, {
-                    targets: [4],
-                    orderData: [4, 0]
-                }]
+    @section scripts{
+        <script src= "https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#Cryptocurrency').DataTable({
+                    "processing": true,
+
+                    "filter": false,
+                    "paging": true,
+                    "pageLength": 10,
+                    "pagingType": "full_numbers",
+                    "ordering": true,
+
+                });
             });
-        });
-    </script>
+        </script>
+    }
+
 </body>
 </html>
 
