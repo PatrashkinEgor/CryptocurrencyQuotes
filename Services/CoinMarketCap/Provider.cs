@@ -11,26 +11,49 @@ using Newtonsoft.Json.Linq;
 
 
 namespace CryptocurrencyQuotes.Services.CoinMarketCap
-{ 
+{
 
     public class Provider : IQuotesProvider
     {
-        private int NumbOfCurrencies{ get; set; } = 50;
+        public const int MAX_NUMB_OF_QUOTES = 200;  //Максимальное количество элементов для запроса стоящего 1 кредит в free coinmarketcap = 200
+        public const int MIN_NUMB_OF_QUOTES = 1;
         private ConnectionSettings connectionSettings;
         private HttpClient client;
-        
-        public IEnumerable<CryptoQuoteModel> GetList()
+
+        /// <summary>
+        /// Requests quotes and converts them to the format of CryptoQuoteModel
+        /// </summary>
+        /// <param name="numbOfQuotes">Ammount of quotes to be requested from coinmarketcap.</param>
+        /// <returns>
+        /// Return list of quotes. </returns>
+        public IEnumerable<CryptoQuoteModel> GetList(int numbOfQuotes = 50)
         {
+
+            if (numbOfQuotes > MAX_NUMB_OF_QUOTES)
+                numbOfQuotes = MAX_NUMB_OF_QUOTES;
+
+            if (numbOfQuotes < MIN_NUMB_OF_QUOTES)
+                numbOfQuotes = 1;
+
             List<CryptoQuoteModel> cryptoQuotes = new List<CryptoQuoteModel>();
+
             using (client = new HttpClient())
             {
-                string path = HostingEnvironment.MapPath("/Services/CoinMarketCap/ConnectionSettings.json");
+                //Получаем настройки подключения(API-key и пути) из JSON
+                string path = HostingEnvironment.MapPath("/Services/CoinMarketCap/ConnectionSettings.json");    
                 connectionSettings = JsonConvert.DeserializeObject<ConnectionSettings>(File.ReadAllText(path));
+                //Готовим заголовок
                 client.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", connectionSettings.ApiKey);
                 client.DefaultRequestHeaders.Add("Accepts", "application/json");
+                //Запрос котировок в USD, десериализация Json
+                var quotesData = JsonConvert.DeserializeObject<LatestDataResponse>(GetLatestQuotes(numbOfQuotes, "USD"));
 
-                var quotesData = JsonConvert.DeserializeObject<LatestDataResponse>(GetLatestQuotes());
+                ///TODO: Check quotesData.status and handle errors
+
+                //Так как конкретные полученные валюты заранее не известны, создаем строку для записи запроса логотипов полученных валют
                 StringBuilder logoRequest = new StringBuilder();
+
+                //Складываем интересующие нас даннае в коллекцию
                 foreach (Cryptocurrency c in quotesData.Data)
                 {
                     CryptoQuoteModel cq = new CryptoQuoteModel
@@ -44,13 +67,20 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
                         Name = c.Name,
                         LastUpdated = c.LastUpdated
                     };
+
+                    //формируем запрос логотипов
                     if (logoRequest.Length != 0)
                         logoRequest.Append(',');
                     logoRequest.Append(c.Id.ToString());
                     cryptoQuotes.Add(cq);
                 }
 
-                JObject jObject = JObject.Parse(GetCryptoLogos(logoRequest.ToString()));
+                // Запрос логотипов
+                JObject jObject = JObject.Parse(GetCryptosInfo(logoRequest.ToString()));
+
+                ///TODO: Check status and handle errors
+
+                // Раскладываем логотипы
                 foreach (CryptoQuoteModel cqm in cryptoQuotes)
                 {
                     path = "data." + cqm.Id.ToString() + ".logo";
@@ -60,18 +90,32 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
             return cryptoQuotes;
         }
 
-        private string GetLatestQuotes()
+        /// <summary>
+        /// Requests the latest data on quotes.
+        /// </summary>
+        /// <param name="numbOfQuotes">Ammount of quotes to be requested from coinmarketcap.</param>
+        /// <param name="convertTo">Currency in which quotes will be requested .</param>
+        /// <returns>
+        /// Returns a paginated list of all active cryptocurrencies with latest market data in JSON format. 
+        /// </returns>
+        private string GetLatestQuotes(int numbOfQuotes, string convertTo)
         {
             var URI = new UriBuilder(connectionSettings.LatestQuotesURI);
             var queryString = HttpUtility.ParseQueryString(string.Empty);
-            queryString["start"] = "1";
-            queryString["limit"] = NumbOfCurrencies.ToString();
-            queryString["convert"] = "USD";
+            queryString["limit"] = numbOfQuotes.ToString();
+            queryString["convert"] = convertTo;
             URI.Query = queryString.ToString();
             return MakeRequest(URI);
         }
 
-        private string GetCryptoLogos(string requestedId)
+        /// <summary>
+        /// Requests common information about cryptocurrencies.
+        /// </summary>
+        /// <param name="requestedId">One or more comma-separated CoinMarketCap cryptocurrency IDs. Example: "1,2".</param>
+        /// <returns>
+        /// Return information about cryptocurrencies in JSON. 
+        /// </returns>
+        private string GetCryptosInfo(string requestedId)
         {
             var URI = new UriBuilder(connectionSettings.CryptoInfoURI);
             var queryString = HttpUtility.ParseQueryString(string.Empty);
@@ -80,8 +124,16 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
             return MakeRequest(URI);
         }
 
+        /// <summary>
+        /// Send request whith HttpClient.
+        /// </summary>
+        /// <param name="URI"> URI to request.</param>
+        /// <returns>
+        /// Return response in string. 
+        /// </returns>
         private string MakeRequest(UriBuilder URI)
         {
+            ///TODO: Exception Handling
             HttpResponseMessage response = client.GetAsync(URI.ToString()).Result;
             response.EnsureSuccessStatusCode();
             return response.Content.ReadAsStringAsync().Result;

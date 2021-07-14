@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CryptocurrencyQuotes.Logger.ExceptionDetail>
+
+@{
+    ViewBag.Title = "Исключения";
+}
+
+<h2>Исключения</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ExceptionMessage)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ControllerName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActionName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StackTrace)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ExceptionMessage)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ControllerName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ActionName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StackTrace)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+    </tr>
+}
+
+</table>

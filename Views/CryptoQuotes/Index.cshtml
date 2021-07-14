@@ -6,14 +6,14 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Котировки валют</title>
+    <title>Котировки криптовалют</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 
 
 </head>
 <body>
     <div>
-        <h3>Котировки валют</h3>
+        <h3>Котировки криптовалют</h3>
         <table id="Cryptocurrency" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -54,8 +54,7 @@
             $(document).ready(function () {
                 $('#Cryptocurrency').DataTable({
                     "processing": true,
-
-                    "filter": false,
+                    "filter": true,
                     "paging": true,
                     "pageLength": 10,
                     "pagingType": "full_numbers",
