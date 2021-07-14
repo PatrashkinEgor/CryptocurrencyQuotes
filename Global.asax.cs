@@ -25,6 +25,7 @@ namespace CryptocurrencyQuotes
             NinjectModule registrations = new NinjectRegistrations();
             var kernel = new StandardKernel(registrations);
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
+            kernel.Unbind<ModelValidatorProvider>();
         }
     }
 }

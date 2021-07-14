@@ -7,6 +7,7 @@ using CryptocurrencyQuotes.Services;
 
 namespace CryptocurrencyQuotes.Controllers
 {
+    [Authorize]
     public class CryptoQuotesController : Controller
     {
         IQuotesProvider provider;
@@ -17,6 +18,8 @@ namespace CryptocurrencyQuotes.Controllers
         }
 
         // GET: CryptoQuotes
+        [HandleError(ExceptionType = typeof(Exception),
+    View = "Error")]
         public ActionResult Index()
         {
             ViewBag.Quotes = provider.GetList();
