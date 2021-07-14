@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using System.Text;
@@ -19,7 +18,7 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
         private int NumbOfCurrencies{ get; set; } = 50;
         private ConnectionSettings connectionSettings;
         private HttpClient client;
-
+        
         public IEnumerable<CryptoQuoteModel> GetList()
         {
             List<CryptoQuoteModel> cryptoQuotes = new List<CryptoQuoteModel>();
