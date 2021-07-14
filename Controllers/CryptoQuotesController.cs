@@ -5,7 +5,7 @@ using CryptocurrencyQuotes.Services;
 
 namespace CryptocurrencyQuotes.Controllers
 {
-    //    [Authorize]
+    [Authorize]
     [HandleError(View = "Error")]
     public class CryptoQuotesController : Controller
     {
