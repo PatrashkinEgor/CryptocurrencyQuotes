@@ -200,6 +200,7 @@
     <Compile Include="Services\CoinMarketCap\LatestDataResponse.cs" />
     <Compile Include="Services\CoinMarketCap\Provider.cs" />
     <Compile Include="Services\IQuotesProvider.cs" />
+    <Compile Include="Services\ServiceResponceException.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util\NinjectRegistrations.cs" />
   </ItemGroup>
