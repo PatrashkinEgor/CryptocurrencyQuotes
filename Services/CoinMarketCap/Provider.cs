@@ -49,9 +49,13 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
                 var quotesData = JsonConvert.DeserializeObject<LatestDataResponse>(GetLatestQuotes(numbOfQuotes, "USD"));
 
                 ///TODO: Check quotesData.status and handle errors
+                if(quotesData.Status.ErrorCode != 0)
+                {
+                    throw new ServiceResponceException(("Error code: " + quotesData.Status.ErrorCode));
+                }
 
-                //Так как конкретные полученные валюты заранее не известны, создаем строку для записи запроса логотипов полученных валют
-                StringBuilder logoRequest = new StringBuilder();
+                    //Так как конкретные полученные валюты заранее не известны, создаем строку для записи запроса логотипов полученных валют
+                    StringBuilder logoRequest = new StringBuilder();
 
                 //Складываем интересующие нас даннае в коллекцию
                 foreach (Cryptocurrency c in quotesData.Data)
@@ -77,8 +81,6 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
 
                 // Запрос логотипов
                 JObject jObject = JObject.Parse(GetCryptosInfo(logoRequest.ToString()));
-
-                ///TODO: Check status and handle errors
 
                 // Раскладываем логотипы
                 foreach (CryptoQuoteModel cqm in cryptoQuotes)
