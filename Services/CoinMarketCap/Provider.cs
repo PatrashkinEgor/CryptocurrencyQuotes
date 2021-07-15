@@ -60,11 +60,12 @@ namespace CryptocurrencyQuotes.Services.CoinMarketCap
                 //Складываем интересующие нас даннае в коллекцию
                 foreach (Cryptocurrency c in quotesData.Data)
                 {
+                    
                     CryptoQuoteModel cq = new CryptoQuoteModel
                     {
                         Id = c.Id,
                         Symbol = c.Symbol,
-                        MarketCap = Decimal.Round(c.Quote.USD.MarketCap, 3),
+                        MarketCap = Decimal.Round(c.Quote.USD.MarketCap, 3),    //Округление для лучшего отображения во View
                         PercentChange1h = Decimal.Round(c.Quote.USD.PercentChange1h, 3),
                         PercentChange24h = Decimal.Round(c.Quote.USD.PercentChange24h, 3),
                         Price = Decimal.Round(c.Quote.USD.Price, 3),
