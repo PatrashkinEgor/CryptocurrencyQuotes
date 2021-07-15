@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Котировки криптовалют</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+
+</head>
+<body>
+    <div>
+        <h3>Котировки криптовалют</h3>
+        <table id="Cryptocurrency" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <td><p></p></td>
+                    <th><p>Название</p></th>
+                    <th><p>Символ</p></th>
+                    <th><p>Цена,$</p></th>
+                    <th><p>Изменение цены за 1 час, %</p></th>
+                    <th><p>Изменение цены за 24 часа, %</p></th>
+                    <th><p>Капитализация</p></th>
+                    <th><p>Обновление</p></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var q in ViewBag.Quotes)
+                {
+                    <tr>
+                        <td><Img src=@q.Logo Width="25" Height="25"></td>
+                        <td>@q.Name</td>
+                        <td>@q.Symbol</td>
+                        <td>@q.Price</td>
+                        <td>@q.PercentChange1h</td>
+                        <td>@q.PercentChange24h</td>
+                        <td>@q.MarketCap</td>
+                        <td>@q.LastUpdated</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
+    </div>
+    @section scripts{
+        <script src= "https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#Cryptocurrency').DataTable({
+                    "processing": true,
+                    "filter": true,
+                    "paging": true,
+                    "pageLength": 10,
+                    "pagingType": "full_numbers",
+                    "ordering": true,
+
+                });
+            });
+        </script>
+    }
+
+</body>
+</html>
+
